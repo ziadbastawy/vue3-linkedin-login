@@ -63,14 +63,6 @@ export function useLinkedIn({
     }
   };
 
-  watchEffect(() => {
-    window.addEventListener("message", receiveMessage, false);
-
-    return () => {
-      window.removeEventListener("message", receiveMessage, false);
-    };
-  });
-
   const getUrl = () => {
     const generatedState = state || generateRandomString();
     localStorage.setItem(LINKEDIN_OAUTH2_STATE, generatedState);
@@ -214,6 +206,16 @@ export function useLinkedIn({
 
     return data;
   };
+
+  onMounted(() => {
+    channel = new BroadcastChannel("linkedin_channel");
+    channel.onmessage = receiveMessage;
+  });
+  onUnmounted(() => {
+    if (channel) {
+      channel.close();
+    }
+  });
 
   return {
     linkedInLogin,

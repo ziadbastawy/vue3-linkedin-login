@@ -27,10 +27,11 @@ export function LinkedInCallback() {
     }
   }
   if (params.code) {
-    window.opener &&
-      window.opener.postMessage(
-        { code: params.code, state: params.state, from: "Linked In" },
-        window.location.origin
-      );
+    const channel = new BroadcastChannel("linkedin_channel");
+    channel.postMessage({
+      code: params.code,
+      state: params.state,
+      from: "Linked In",
+    });
   }
 }
